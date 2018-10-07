@@ -1,6 +1,9 @@
 package com.evcard.demo.apache.kafka.embedded;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.AdminClientConfig;
+import org.apache.kafka.clients.admin.DeleteTopicsResult;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -11,10 +14,10 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author ChangWei Li
@@ -57,7 +60,16 @@ public class KafkaConnectTest {
     }
 
     @Test
-    public void admin() {
+    public void admin() throws ExecutionException, InterruptedException, TimeoutException {
+        Properties properties = new Properties();
+        Map<String, String> paraMap = new HashMap<>(3);
+        paraMap.put(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, "192.168.99.100:9092");
+        properties.putAll(paraMap);
+
+        AdminClient kafkaAdminClient = AdminClient.create(properties);
+        DeleteTopicsResult result = kafkaAdminClient.deleteTopics(Arrays.asList("foo1", "foo2", "foo3"));
+
+        result.all().get(5, TimeUnit.SECONDS);
     }
 
 }
