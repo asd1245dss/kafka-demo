@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh">
+    <head>
+        <meta charset="UTF-8">
+        <title>Snake Game</title>
+    </head>
+
+    <body>
+        <canvas id="game" width="1585px" height="500px"></canvas>
+        <script>
+            window.onload = function () {
+                canvas = document.getElementById("game");
+                context = canvas.getContext("2d");
+                document.addEventListener("keydown", control);
+                setInterval(game, 1000 / 15);
+            };
+            var canvas, context;
+            var x = 0;
+            var y  = 0;
+            var px = 10;
+            var py = 10;
+            var gs = 20;
+            var tc = 50;
+            var ax = 15;
+            var ay = 15;
+            var trail = [];
+            var tail = 5;
+
+            function control(keyEvent) {
+                switch (keyEvent.which) {
+                    case 37:
+                        x = -1;
+                        y = 0;
+                        break;
+                    case 38:
+                        x = 0;
+                        y = -1;
+                        break;
+                    case 39:
+                        x = 1;
+                        y = 0;
+                        break;
+                    case 40:
+                        x = 0;
+                        y = 1;
+                        break;
+                }
+            }
+
+            function game() {
+                px += x;
+                py += y;
+                if (px < 0) {
+                    px = tc - 1;
+                }
+                if (px > tc - 1) {
+                    px = 0;
+                }
+                if (py < 0) {
+                    px = tc - 1;
+                }
+                if (py > tc - 1) {
+                    px = 0;
+                }
+                context.fillStyle = "black";
+                context.fillRect(0, 0, canvas.width, canvas.height);
+
+                context.fillStyle = "lime";
+                for (var i = 0; i < trail.length; i++) {
+                    context.fillRect(trail[i].x * gs, trail[i].y * gs, gs - 2, gs - 2);
+                    if (trail[i].x === px && trail[i].y === py) {
+                        tail = 5;
+                    }
+                }
+
+                context.fillStyle = "red";
+                context.fillRect(ax * gs, ay * gs, gs - 2, gs - 2);
+
+                trail.push({
+                    x: px,
+                    y: py
+                });
+
+                while (trail.length > tail) {
+                    trail.shift();
+                }
+
+                if (ax === px && ay === py) {
+                    tail++;
+                    ax = Math.floor(Math.random() * tc);
+                    ay = Math.floor(Math.random() * tc);
+                }
+            }
+        </script>
+    </body>
+<body>
+
+</body>
+</html>
